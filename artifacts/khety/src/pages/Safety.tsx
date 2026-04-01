@@ -19,6 +19,9 @@ import {
   useGetEmergencyContacts,
   useGetCommonScams,
   useGetTouristRights,
+  type EmergencyContact,
+  type CommonScam,
+  type TouristRight,
 } from "@workspace/api-client-react";
 
 const CONTACT_META: Record<string, { icon: React.ElementType; color: string; bg: string }> = {
@@ -179,7 +182,7 @@ export default function Safety() {
 
   const filteredScams = useMemo(() => {
     if (!scamsData) return [];
-    return scamsData.filter(s => {
+    return scamsData.filter((s: CommonScam) => {
       const matchFilter = scamFilter === "all" || s.severity === scamFilter;
       const matchSearch = !scamSearch || s.title.toLowerCase().includes(scamSearch.toLowerCase()) || s.description.toLowerCase().includes(scamSearch.toLowerCase());
       return matchFilter && matchSearch;
@@ -364,7 +367,7 @@ export default function Safety() {
             </p>
 
             {contactsLoading ? <ContactSkeleton /> : (
-              (contactsData ?? []).map((contact, idx) => {
+              (contactsData ?? []).map((contact: EmergencyContact, idx: number) => {
                 const meta = CONTACT_META[contact.name] || { icon: Phone, color: "text-primary", bg: "bg-primary/10 border-primary/25" };
                 const IconComp = meta.icon;
                 return (
@@ -461,7 +464,7 @@ export default function Safety() {
               </div>
             ) : (
               <div className="space-y-3">
-                {filteredScams.map(scam => (
+                {filteredScams.map((scam: CommonScam) => (
                   <ScamCard
                     key={scam.id}
                     scam={scam}
@@ -477,7 +480,7 @@ export default function Safety() {
                 {(["high","medium","low"] as const).map(s => (
                   <div key={s} className="flex items-center gap-1.5">
                     <div className={cn("w-2 h-2 rounded-full", SEVERITY_STYLE[s].dot)} />
-                    {getRiskLabel(s)}: {scamsData.filter(x => x.severity === s).length}
+                    {getRiskLabel(s)}: {scamsData.filter((x: CommonScam) => x.severity === s).length}
                   </div>
                 ))}
               </div>
@@ -500,7 +503,7 @@ export default function Safety() {
                 {[1,2,3,4].map(i => <Skeleton key={i} className="h-24 w-full rounded-2xl" />)}
               </div>
             ) : (
-              (rightsData ?? []).map((right, idx) => (
+              (rightsData ?? []).map((right: TouristRight, idx: number) => (
                 <RightCard
                   key={right.id}
                   right={right}
