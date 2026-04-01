@@ -24,6 +24,32 @@ import {
   type TouristRight,
 } from "@workspace/api-client-react";
 
+const FALLBACK_CONTACTS: EmergencyContact[] = [
+  { id: "fc-1", name: "Tourist Police",              number: "126",              description: "Dedicated tourist assistance and emergency response", category: "police",  availableHours: "24/7" },
+  { id: "fc-2", name: "Ambulance",                   number: "123",              description: "Emergency medical services nationwide",              category: "medical", availableHours: "24/7" },
+  { id: "fc-3", name: "Fire Department",             number: "180",              description: "Fire and rescue emergency services",                 category: "fire",    availableHours: "24/7" },
+  { id: "fc-4", name: "Police",                      number: "122",              description: "National police emergency line",                     category: "police",  availableHours: "24/7" },
+  { id: "fc-5", name: "Egyptian Tourism Authority",  number: "+20-2-2391-3454",  description: "Tourist complaints, queries and official guidance",   category: "tourism", availableHours: "Business hours" },
+];
+
+const FALLBACK_SCAMS: CommonScam[] = [
+  { id: "fs-1", title: "Fake Tour Guide",       description: "Unlicensed individuals near monuments offer cheap tours that end at overpriced souvenir shops with inflated commissions.",    howToAvoid: "Use only officially licensed guides with an Egyptian Tourism Authority ID badge. Book guides through your hotel or a reputable agency.",                    severity: "high" },
+  { id: "fs-2", title: "Camel / Horse Ride",    description: "Tourists are offered a short cheap ride near the Pyramids, then charged hundreds of dollars to be brought back to the start.", howToAvoid: "Agree on a clear round-trip price in writing before mounting. Ignore 'free photo' offers — nothing is free here.",                                       severity: "high" },
+  { id: "fs-3", title: "Fake Papyrus",          description: "Guides steer tourists to shops selling low-quality banana-leaf or plastic prints marketed as authentic ancient papyrus.",       howToAvoid: "Genuine papyrus bends without cracking. Buy only from certified shops or official museum gift stores.",                                                   severity: "medium" },
+  { id: "fs-4", title: "Taxi Overcharging",     description: "Unmetered taxis quote inflated fares, especially from airports and tourist sites. Drivers claim meters are broken.",            howToAvoid: "Use Uber, Careem, or agree on the fare before entering the cab. Ask your hotel for typical prices to landmarks.",                                        severity: "medium" },
+  { id: "fs-5", title: "Currency Exchange Scam",description: "Street changers or some shops offer tempting rates and short-change tourists by folding bills or using sleight of hand.",        howToAvoid: "Exchange money only at official banks, hotel exchange desks, or certified ATMs. Count your money before leaving the counter.",                          severity: "high" },
+  { id: "fs-6", title: "Photo Fee Ambush",      description: "Locals in traditional dress or with exotic animals (snakes, falcons) encourage photos then demand high payment.",               howToAvoid: "Decline or agree on a fee before taking any photo. Walk away if they become aggressive — this is a recognised tourist tactic.",                        severity: "low" },
+];
+
+const FALLBACK_RIGHTS: TouristRight[] = [
+  { id: "fr-1", title: "Right to Licensed Guides",       description: "You have the right to request proof of licensing from any tour guide. All legitimate guides carry an official Egyptian Tourism Authority badge." },
+  { id: "fr-2", title: "Right to Official Receipts",     description: "Vendors and service providers must issue a receipt on request. Keep receipts; they are essential for any price dispute or refund claim." },
+  { id: "fr-3", title: "Right to Tourist Police Help",   description: "Tourist police (dial 126) are stationed at all major sites and are obligated to assist foreign visitors with complaints, disputes, and safety issues." },
+  { id: "fr-4", title: "Right to Safe Transportation",   description: "Licensed taxis and app-based rides (Uber, Careem) are regulated. You may refuse a ride and report overcharging to the Tourist Police." },
+  { id: "fr-5", title: "Right to File a Complaint",      description: "Complaints against service providers, guides, or vendors can be filed with the Egyptian Tourism Authority (+20-2-2391-3454) or at any tourist police station." },
+  { id: "fr-6", title: "Right to Medical Assistance",    description: "Emergency medical care cannot be withheld. Call 123 for an ambulance. Travel insurance is strongly recommended to cover hospital fees." },
+];
+
 const CONTACT_META: Record<string, { icon: React.ElementType; color: string; bg: string }> = {
   "Tourist Police":             { icon: Shield,      color: "text-blue-400",    bg: "bg-blue-500/10 border-blue-500/25" },
   "Ambulance":                  { icon: Stethoscope, color: "text-red-400",     bg: "bg-red-500/10 border-red-500/25" },
@@ -176,12 +202,16 @@ export default function Safety() {
   const [scamSearch, setScamSearch] = useState("");
   const [scamFilter, setScamFilter] = useState<"all" | "high" | "medium" | "low">("all");
 
-  const { data: contactsData, isLoading: contactsLoading } = useGetEmergencyContacts();
-  const { data: scamsData,    isLoading: scamsLoading }    = useGetCommonScams();
-  const { data: rightsData,   isLoading: rightsLoading }   = useGetTouristRights();
+  const { data: contactsRaw, isLoading: contactsLoading } = useGetEmergencyContacts();
+  const { data: scamsRaw,    isLoading: scamsLoading }    = useGetCommonScams();
+  const { data: rightsRaw,   isLoading: rightsLoading }   = useGetTouristRights();
+
+  const contactsData = Array.isArray(contactsRaw) && contactsRaw.length > 0 ? contactsRaw : (contactsLoading ? [] : FALLBACK_CONTACTS);
+  const scamsData    = Array.isArray(scamsRaw)    && scamsRaw.length    > 0 ? scamsRaw    : (scamsLoading    ? [] : FALLBACK_SCAMS);
+  const rightsData   = Array.isArray(rightsRaw)   && rightsRaw.length   > 0 ? rightsRaw   : (rightsLoading   ? [] : FALLBACK_RIGHTS);
 
   const filteredScams = useMemo(() => {
-    if (!scamsData) return [];
+    if (!Array.isArray(scamsData) || scamsData.length === 0) return [];
     return scamsData.filter((s: CommonScam) => {
       const matchFilter = scamFilter === "all" || s.severity === scamFilter;
       const matchSearch = !scamSearch || s.title.toLowerCase().includes(scamSearch.toLowerCase()) || s.description.toLowerCase().includes(scamSearch.toLowerCase());

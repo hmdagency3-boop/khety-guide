@@ -22,7 +22,14 @@
   PNPM_VERSION  = "10"
   BASE_PATH     = "/"
 
-# ── SPA routing — redirect all paths to index.html ──────────
+# ── API routes — return 404 (no SPA fallback for backend calls) ──
+[[redirects]]
+  from   = "/api/*"
+  to     = "/404"
+  status = 404
+  force  = true
+
+# ── SPA routing — redirect all other paths to index.html ─────
 [[redirects]]
   from   = "/*"
   to     = "/index.html"
