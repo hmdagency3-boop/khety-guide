@@ -1,0 +1,26 @@
+# ============================================================
+# Cloudflare Pages — Khety Guide Frontend
+# ============================================================
+# Deploy with:  pnpm dlx wrangler pages deploy artifacts/khety/dist
+# Or link this repo in Cloudflare Dashboard and set:
+#   Build command:    pnpm run build:frontend
+#   Output directory: artifacts/khety/dist
+#   Root directory:   / (repo root)
+# ============================================================
+
+name = "khety-guide"
+pages_build_output_dir = "artifacts/khety/dist"
+compatibility_date = "2025-01-01"
+
+[build]
+command = "pnpm run build:frontend"
+
+# ── Environment Variables (set secrets in CF Dashboard, NOT here) ────
+# VITE_SUPABASE_URL  → Cloudflare Pages → Settings → Environment Variables
+# VITE_SUPABASE_ANON_KEY
+# VITE_API_BASE_URL  → URL of your Render/Railway API server
+
+# ── Preview environments (branch deploys) ───────────────────────────
+[[env.preview.vars]]
+# Add non-secret preview vars here if needed
+# VITE_API_BASE_URL = "https://khety-api-staging.onrender.com"

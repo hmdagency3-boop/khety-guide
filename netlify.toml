@@ -1,0 +1,63 @@
+# ============================================================
+# Netlify Configuration — Khety Guide (React PWA)
+# ============================================================
+# Dashboard settings (automatic via this file):
+#   Build command : pnpm run build:frontend
+#   Publish dir   : artifacts/khety/dist/public
+#   Base dir      : / (repo root)
+#
+# Required env vars → Netlify Dashboard → Site → Environment variables:
+#   VITE_SUPABASE_URL
+#   VITE_SUPABASE_ANON_KEY
+#   VITE_API_BASE_URL   (URL of your backend API server)
+#   BASE_PATH           (set to /)
+# ============================================================
+
+[build]
+  command = "pnpm install --frozen-lockfile && pnpm run build:frontend"
+  publish = "artifacts/khety/dist/public"
+
+[build.environment]
+  NODE_VERSION  = "20"
+  PNPM_VERSION  = "10"
+  BASE_PATH     = "/"
+
+# ── SPA routing — redirect all paths to index.html ──────────
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+# ── Security headers ─────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options           = "DENY"
+    X-Content-Type-Options    = "nosniff"
+    X-XSS-Protection          = "1; mode=block"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=(self)"
+
+# ── Cache: immutable assets (JS/CSS bundles with hash) ───────
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ── Cache: PWA manifest & service worker (no cache) ──────────
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# ── Branch deploy (preview) overrides ────────────────────────
+[context.deploy-preview]
+  command = "pnpm install --frozen-lockfile && pnpm run build:frontend"
+
+[context.branch-deploy]
+  command = "pnpm install --frozen-lockfile && pnpm run build:frontend"
