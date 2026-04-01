@@ -36,15 +36,25 @@ export interface Landmark {
 export interface TouristRight {
   id: string;
   title: string;
+  titleAr?: string;
   description: string;
+  descriptionAr?: string;
   icon?: string;
+  sortOrder?: number;
+  isActive?: boolean;
 }
 
 export interface EmergencyContact {
   id: string;
   name: string;
+  nameAr?: string;
   number: string;
   description?: string;
+  descriptionAr?: string;
+  category?: string;
+  availableHours?: string;
+  sortOrder?: number;
+  isActive?: boolean;
 }
 
 export type CommonScamSeverity =
@@ -59,9 +69,14 @@ export const CommonScamSeverity = {
 export interface CommonScam {
   id: string;
   title: string;
+  titleAr?: string;
   description: string;
+  descriptionAr?: string;
   severity: CommonScamSeverity;
   howToAvoid: string;
+  howToAvoidAr?: string;
+  sortOrder?: number;
+  isActive?: boolean;
 }
 
 export type GetLandmarksParams = {

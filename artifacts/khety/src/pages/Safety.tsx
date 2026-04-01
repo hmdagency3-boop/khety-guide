@@ -24,41 +24,20 @@ import {
   type TouristRight,
 } from "@workspace/api-client-react";
 
-const FALLBACK_CONTACTS: EmergencyContact[] = [
-  { id: "fc-1", name: "Tourist Police",              number: "126",              description: "Dedicated tourist assistance and emergency response", category: "police",  availableHours: "24/7" },
-  { id: "fc-2", name: "Ambulance",                   number: "123",              description: "Emergency medical services nationwide",              category: "medical", availableHours: "24/7" },
-  { id: "fc-3", name: "Fire Department",             number: "180",              description: "Fire and rescue emergency services",                 category: "fire",    availableHours: "24/7" },
-  { id: "fc-4", name: "Police",                      number: "122",              description: "National police emergency line",                     category: "police",  availableHours: "24/7" },
-  { id: "fc-5", name: "Egyptian Tourism Authority",  number: "+20-2-2391-3454",  description: "Tourist complaints, queries and official guidance",   category: "tourism", availableHours: "Business hours" },
-];
 
-const FALLBACK_SCAMS: CommonScam[] = [
-  { id: "fs-1", title: "Fake Tour Guide",       description: "Unlicensed individuals near monuments offer cheap tours that end at overpriced souvenir shops with inflated commissions.",    howToAvoid: "Use only officially licensed guides with an Egyptian Tourism Authority ID badge. Book guides through your hotel or a reputable agency.",                    severity: "high" },
-  { id: "fs-2", title: "Camel / Horse Ride",    description: "Tourists are offered a short cheap ride near the Pyramids, then charged hundreds of dollars to be brought back to the start.", howToAvoid: "Agree on a clear round-trip price in writing before mounting. Ignore 'free photo' offers — nothing is free here.",                                       severity: "high" },
-  { id: "fs-3", title: "Fake Papyrus",          description: "Guides steer tourists to shops selling low-quality banana-leaf or plastic prints marketed as authentic ancient papyrus.",       howToAvoid: "Genuine papyrus bends without cracking. Buy only from certified shops or official museum gift stores.",                                                   severity: "medium" },
-  { id: "fs-4", title: "Taxi Overcharging",     description: "Unmetered taxis quote inflated fares, especially from airports and tourist sites. Drivers claim meters are broken.",            howToAvoid: "Use Uber, Careem, or agree on the fare before entering the cab. Ask your hotel for typical prices to landmarks.",                                        severity: "medium" },
-  { id: "fs-5", title: "Currency Exchange Scam",description: "Street changers or some shops offer tempting rates and short-change tourists by folding bills or using sleight of hand.",        howToAvoid: "Exchange money only at official banks, hotel exchange desks, or certified ATMs. Count your money before leaving the counter.",                          severity: "high" },
-  { id: "fs-6", title: "Photo Fee Ambush",      description: "Locals in traditional dress or with exotic animals (snakes, falcons) encourage photos then demand high payment.",               howToAvoid: "Decline or agree on a fee before taking any photo. Walk away if they become aggressive — this is a recognised tourist tactic.",                        severity: "low" },
-];
-
-const FALLBACK_RIGHTS: TouristRight[] = [
-  { id: "fr-1", title: "Right to Licensed Guides",       description: "You have the right to request proof of licensing from any tour guide. All legitimate guides carry an official Egyptian Tourism Authority badge." },
-  { id: "fr-2", title: "Right to Official Receipts",     description: "Vendors and service providers must issue a receipt on request. Keep receipts; they are essential for any price dispute or refund claim." },
-  { id: "fr-3", title: "Right to Tourist Police Help",   description: "Tourist police (dial 126) are stationed at all major sites and are obligated to assist foreign visitors with complaints, disputes, and safety issues." },
-  { id: "fr-4", title: "Right to Safe Transportation",   description: "Licensed taxis and app-based rides (Uber, Careem) are regulated. You may refuse a ride and report overcharging to the Tourist Police." },
-  { id: "fr-5", title: "Right to File a Complaint",      description: "Complaints against service providers, guides, or vendors can be filed with the Egyptian Tourism Authority (+20-2-2391-3454) or at any tourist police station." },
-  { id: "fr-6", title: "Right to Medical Assistance",    description: "Emergency medical care cannot be withheld. Call 123 for an ambulance. Travel insurance is strongly recommended to cover hospital fees." },
-];
-
-const CONTACT_META: Record<string, { icon: React.ElementType; color: string; bg: string }> = {
-  "Tourist Police":             { icon: Shield,      color: "text-blue-400",    bg: "bg-blue-500/10 border-blue-500/25" },
-  "Ambulance":                  { icon: Stethoscope, color: "text-red-400",     bg: "bg-red-500/10 border-red-500/25" },
-  "Fire Department":            { icon: Flame,       color: "text-orange-400",  bg: "bg-orange-500/10 border-orange-500/25" },
-  "Police":                     { icon: Siren,       color: "text-indigo-400",  bg: "bg-indigo-500/10 border-indigo-500/25" },
-  "Egyptian Tourism Authority": { icon: Globe,       color: "text-primary",     bg: "bg-primary/10 border-primary/25" },
-  "Hurghada Hospital":          { icon: Building2,   color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/25" },
-  "Cairo International Hospital":{ icon: Building2,  color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/25" },
+const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg: string; chipColor: string }> = {
+  police:          { icon: Shield,      color: "text-blue-400",    bg: "bg-blue-500/10 border-blue-500/25",    chipColor: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
+  tourist_police:  { icon: Shield,      color: "text-blue-400",    bg: "bg-blue-500/10 border-blue-500/25",    chipColor: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
+  ambulance:       { icon: Stethoscope, color: "text-red-400",     bg: "bg-red-500/10 border-red-500/25",     chipColor: "bg-red-500/10 text-red-400 border-red-500/20" },
+  medical:         { icon: Stethoscope, color: "text-red-400",     bg: "bg-red-500/10 border-red-500/25",     chipColor: "bg-red-500/10 text-red-400 border-red-500/20" },
+  fire:            { icon: Flame,       color: "text-orange-400",  bg: "bg-orange-500/10 border-orange-500/25", chipColor: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
+  hospital:        { icon: Building2,   color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/25", chipColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" },
+  tourism:         { icon: Globe,       color: "text-primary",     bg: "bg-primary/10 border-primary/25",     chipColor: "bg-primary/10 text-primary border-primary/20" },
+  general:         { icon: Phone,       color: "text-primary",     bg: "bg-primary/10 border-primary/25",     chipColor: "bg-primary/10 text-primary border-primary/20" },
 };
+function getContactMeta(category: string) {
+  return CATEGORY_META[category?.toLowerCase()] ?? CATEGORY_META.general;
+}
 
 const SEVERITY_STYLE = {
   high:   { dot: "bg-red-500",    ring: "ring-red-500/30",    badge: "bg-red-500/15 text-red-400 border-red-500/30",    bar: "bg-red-500",    label: "text-red-400" },
@@ -206,9 +185,9 @@ export default function Safety() {
   const { data: scamsRaw,    isLoading: scamsLoading }    = useGetCommonScams();
   const { data: rightsRaw,   isLoading: rightsLoading }   = useGetTouristRights();
 
-  const contactsData = Array.isArray(contactsRaw) && contactsRaw.length > 0 ? contactsRaw : (contactsLoading ? [] : FALLBACK_CONTACTS);
-  const scamsData    = Array.isArray(scamsRaw)    && scamsRaw.length    > 0 ? scamsRaw    : (scamsLoading    ? [] : FALLBACK_SCAMS);
-  const rightsData   = Array.isArray(rightsRaw)   && rightsRaw.length   > 0 ? rightsRaw   : (rightsLoading   ? [] : FALLBACK_RIGHTS);
+  const contactsData: EmergencyContact[] = Array.isArray(contactsRaw) ? contactsRaw : [];
+  const scamsData:    CommonScam[]       = Array.isArray(scamsRaw)    ? scamsRaw    : [];
+  const rightsData:   TouristRight[]     = Array.isArray(rightsRaw)   ? rightsRaw   : [];
 
   const filteredScams = useMemo(() => {
     if (!Array.isArray(scamsData) || scamsData.length === 0) return [];
@@ -267,7 +246,7 @@ export default function Safety() {
     }
 
     setSosSending(false);
-    window.location.href = "tel:126";
+    window.location.href = `tel:${primaryNumber}`;
   }
 
   const getRiskLabel = (severity: string) => {
@@ -276,11 +255,9 @@ export default function Safety() {
     return t("safety.risk_low");
   };
 
-  const QUICK_CONTACTS = [
-    { label: t("safety.tourist_police"), value: "126", color: "bg-blue-500/10 text-blue-400 border-blue-500/20" },
-    { label: t("safety.ambulance"),      value: "123", color: "bg-red-500/10 text-red-400 border-red-500/20" },
-    { label: t("safety.fire"),           value: "180", color: "bg-orange-500/10 text-orange-400 border-orange-500/20" },
-  ];
+  const quickContacts = contactsData.slice(0, 3);
+  const primaryContact = contactsData.find(c => ["police","tourist_police"].includes(c.category?.toLowerCase() ?? "")) ?? contactsData[0];
+  const primaryNumber = primaryContact?.number ?? "126";
 
   const TABS = [
     { value: "contacts", icon: Phone,        label: t("safety.tabs.sos") },
@@ -310,12 +287,18 @@ export default function Safety() {
           </p>
 
           <div className="flex gap-2 mt-4 flex-wrap">
-            {QUICK_CONTACTS.map(b => (
-              <a key={b.value} href={`tel:${b.value}`}
-                className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold transition-opacity active:opacity-60", b.color)}>
-                <Phone className="w-3 h-3" />{b.label}: {b.value}
-              </a>
-            ))}
+            {contactsLoading
+              ? [1,2,3].map(i => <div key={i} className="h-7 w-28 rounded-full bg-muted/40 animate-pulse" />)
+              : quickContacts.map(c => {
+                  const m = getContactMeta(c.category ?? "");
+                  return (
+                    <a key={c.id} href={`tel:${c.number.replace(/[^0-9+]/g, "")}`}
+                      className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[11px] font-bold transition-opacity active:opacity-60", m.chipColor)}>
+                      <Phone className="w-3 h-3" />{c.name}: {c.number}
+                    </a>
+                  );
+                })
+            }
           </div>
         </motion.div>
       </div>
@@ -336,11 +319,11 @@ export default function Safety() {
                 <Siren className="w-3 h-3 animate-pulse" /> {t("safety.emergency")}
               </p>
               <p className="text-3xl font-black text-foreground tracking-tight">
-                {t("safety.tourist_police_line")}<span className="text-destructive">126</span>
+                {t("safety.tourist_police_line")}<span className="text-destructive">{primaryNumber}</span>
               </p>
             </div>
             <a
-              href="tel:126"
+              href={`tel:${primaryNumber}`}
               className="relative w-16 h-16 rounded-full bg-destructive flex items-center justify-center shadow-lg shadow-destructive/40 active:scale-95 transition-transform"
               aria-label={t("safety.tourist_police")}
             >
@@ -398,7 +381,7 @@ export default function Safety() {
 
             {contactsLoading ? <ContactSkeleton /> : (
               (contactsData ?? []).map((contact: EmergencyContact, idx: number) => {
-                const meta = CONTACT_META[contact.name] || { icon: Phone, color: "text-primary", bg: "bg-primary/10 border-primary/25" };
+                const meta = getContactMeta(contact.category ?? "");
                 const IconComp = meta.icon;
                 return (
                   <motion.div key={contact.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}>
@@ -412,9 +395,11 @@ export default function Safety() {
                             <div className="flex-1 min-w-0">
                               <h3 className="font-semibold text-sm text-foreground truncate">{contact.name}</h3>
                               <p className="text-xs text-muted-foreground mt-0.5 truncate">{contact.description}</p>
-                              <span className="text-[10px] text-muted-foreground/60 flex items-center gap-1 mt-1">
-                                <Clock className="w-3 h-3" />24/7
-                              </span>
+                              {contact.availableHours && (
+                                <span className="text-[10px] text-muted-foreground/60 flex items-center gap-1 mt-1">
+                                  <Clock className="w-3 h-3" />{contact.availableHours}
+                                </span>
+                              )}
                             </div>
                             <div className="text-right shrink-0 flex flex-col items-end gap-1.5">
                               <p className={cn("font-black text-xl leading-none", meta.color)}>{contact.number}</p>
@@ -634,12 +619,12 @@ export default function Safety() {
             className="fixed bottom-20 right-4 z-50"
           >
             <a
-              href="tel:126"
+              href={`tel:${primaryNumber}`}
               className="flex items-center gap-2 bg-destructive text-white px-4 py-2.5 rounded-full shadow-xl shadow-destructive/30 font-bold text-sm active:scale-95 transition-transform border border-destructive/60"
               aria-label={t("safety.tourist_police")}
             >
               <Phone className="w-4 h-4 fill-white" />
-              <span>126</span>
+              <span>{primaryNumber}</span>
             </a>
           </motion.div>
         )}

@@ -33,7 +33,7 @@ const CATEGORIES = ["ancient", "museum", "mosque", "church", "nature", "market",
 const BUCKET = "welcome-to-pocket";
 const BANNER_BUCKET = "banners";
 
-type Tab = "overview" | "landmarks" | "users" | "conversations" | "visitors" | "welcome_media" | "support_chats" | "locations" | "notifications" | "analytics" | "live_users" | "settings" | "audit_log" | "reports" | "static_content" | "banners" | "invitations" | "vip_codes" | "canned_replies" | "coord_search";
+type Tab = "overview" | "landmarks" | "users" | "conversations" | "visitors" | "welcome_media" | "support_chats" | "locations" | "notifications" | "analytics" | "live_users" | "settings" | "audit_log" | "reports" | "static_content" | "banners" | "invitations" | "vip_codes" | "canned_replies" | "coord_search" | "safety_data";
 
 type Banner = {
   id: string;
@@ -320,7 +320,7 @@ export default function Admin() {
   // Uses a static copy of ROLE_ALLOWED to avoid dependency on derived state.
   useEffect(() => {
     const ROLE_TABS: Record<string, string[]> = {
-      content_admin: ["overview", "analytics", "landmarks", "banners", "static_content", "welcome_media", "audit_log"],
+      content_admin: ["overview", "analytics", "landmarks", "banners", "static_content", "safety_data", "welcome_media", "audit_log"],
       support_admin: ["overview", "analytics", "support_chats", "notifications", "users", "conversations", "live_users", "visitors", "locations", "canned_replies", "reports", "audit_log"],
     };
     if (myAdminRole && ROLE_TABS[myAdminRole] && !ROLE_TABS[myAdminRole].includes(tab)) {
@@ -477,6 +477,23 @@ export default function Admin() {
   const [invLoading, setInvLoading]   = useState(false);
   const [invLoaded, setInvLoaded]     = useState(false);
 
+  type SafetyContact = { id: string; name: string; name_ar: string | null; number: string; description: string | null; description_ar: string | null; category: string; available_hours: string; sort_order: number; is_active: boolean };
+  type SafetyScam    = { id: string; title: string; title_ar: string | null; description: string; description_ar: string | null; how_to_avoid: string; how_to_avoid_ar: string | null; severity: string; sort_order: number; is_active: boolean };
+  type SafetyRight   = { id: string; title: string; title_ar: string | null; description: string; description_ar: string | null; icon: string | null; sort_order: number; is_active: boolean };
+
+  const [safetyContacts, setSafetyContacts] = useState<SafetyContact[]>([]);
+  const [safetyScams, setSafetyScams]       = useState<SafetyScam[]>([]);
+  const [safetyRights, setSafetyRights]     = useState<SafetyRight[]>([]);
+  const [safetyLoaded, setSafetyLoaded]     = useState(false);
+  const [safetyLoading, setSafetyLoading]   = useState(false);
+  const [safetySubTab, setSafetySubTab]     = useState<"contacts" | "scams" | "rights">("contacts");
+  const [safetyFormOpen, setSafetyFormOpen] = useState(false);
+  const [safetyEditId, setSafetyEditId]     = useState<string | null>(null);
+  const [safetySaving, setSafetySaving]     = useState(false);
+  const [safetyContactForm, setSafetyContactForm] = useState({ name: "", name_ar: "", number: "", description: "", description_ar: "", category: "general", available_hours: "24/7", sort_order: 0 });
+  const [safetyScamForm, setSafetyScamForm]       = useState({ title: "", title_ar: "", description: "", description_ar: "", how_to_avoid: "", how_to_avoid_ar: "", severity: "medium", sort_order: 0 });
+  const [safetyRightForm, setSafetyRightForm]     = useState({ title: "", title_ar: "", description: "", description_ar: "", icon: "", sort_order: 0 });
+
   const refresh = useCallback(() => setRefreshKey(k => k + 1), []);
 
   // ── Canned Replies ─────────────────────────────────────────────────
@@ -614,6 +631,25 @@ export default function Admin() {
   useEffect(() => {
     if (tab === "invitations" && !invLoaded) loadInvitations();
   }, [tab, invLoaded, loadInvitations]);
+
+  // ── Safety Data ─────────────────────────────────────────────────────
+  const loadSafetyData = useCallback(async () => {
+    setSafetyLoading(true);
+    const [{ data: c }, { data: s }, { data: r }] = await Promise.all([
+      supabase.from("emergency_contacts").select("*").order("sort_order"),
+      supabase.from("common_scams").select("*").order("sort_order"),
+      supabase.from("tourist_rights").select("*").order("sort_order"),
+    ]);
+    if (c) setSafetyContacts(c as SafetyContact[]);
+    if (s) setSafetyScams(s as SafetyScam[]);
+    if (r) setSafetyRights(r as SafetyRight[]);
+    setSafetyLoading(false);
+    setSafetyLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (tab === "safety_data" && !safetyLoaded) loadSafetyData();
+  }, [tab, safetyLoaded, loadSafetyData]);
 
   // VIP Codes
   type VipCode = { id: string; code: string; welcome_title: string; welcome_msg: string; welcome_glyph: string; is_active: boolean; max_uses: number | null; used_count: number; created_at: string };
@@ -1385,11 +1421,12 @@ export default function Admin() {
       vip_codes: async () => {},
       canned_replies: async () => { if (!cannedLoaded) await loadCannedReplies(); },
       coord_search: async () => {},
+      safety_data: async () => { if (!safetyLoaded) await loadSafetyData(); },
     };
     loaders[tab]()
       .catch((e: any) => setError(e.message))
       .finally(() => setDataLoading(false));
-  }, [tab, refreshKey, isAdmin, user, loadOverview, loadLandmarks, loadUsers, loadConversations, loadVisitors, loadWelcomeMedia, loadSupportChats, loadLocations, loadAdminNotifications, loadAnalytics, loadSettings, loadAuditLog, loadReports, loadBanners]);
+  }, [tab, refreshKey, isAdmin, user, loadOverview, loadLandmarks, loadUsers, loadConversations, loadVisitors, loadWelcomeMedia, loadSupportChats, loadLocations, loadAdminNotifications, loadAnalytics, loadSettings, loadAuditLog, loadReports, loadBanners, safetyLoaded, loadSafetyData]);
 
   async function saveLandmark() {
     if (!editingLandmark?.name) return;
@@ -1804,6 +1841,7 @@ export default function Admin() {
     { id: "audit_log",      label: "السجل",        icon: ClipboardList,   color: "text-purple-400",   bg: "bg-purple-500/15" },
     { id: "reports",        label: "التقارير",     icon: FileBarChart2,   color: "text-teal-400",     bg: "bg-teal-500/15" },
     { id: "static_content", label: "المحتوى",      icon: PencilLine,      color: "text-pink-400",     bg: "bg-pink-500/15" },
+    { id: "safety_data",    label: "بيانات السلامة", icon: ShieldCheck,    color: "text-emerald-400",  bg: "bg-emerald-500/15" },
     { id: "banners",         label: "البانرات",     icon: Megaphone,       color: "text-amber-400",    bg: "bg-amber-500/15", badge: banners.length || undefined },
     { id: "invitations",     label: "الدعوات",      icon: Gift,            color: "text-rose-400",     bg: "bg-rose-500/15" },
     { id: "vip_codes",       label: "كودات VIP",    icon: Crown,           color: "text-yellow-400",   bg: "bg-yellow-500/15" },
@@ -4072,7 +4110,7 @@ export default function Admin() {
 
                 {/* ─ ADMIN TABS VISIBILITY ─ */}
                 {(() => {
-                  const DEFAULT_ADMIN_TABS: Record<string, boolean> = { support_chats: true, overview: true, notifications: true, analytics: true, landmarks: true, users: true, conversations: true, live_users: true, visitors: true, locations: true, welcome_media: true, settings: true, audit_log: true, reports: true, static_content: true, banners: true, invitations: true, vip_codes: true };
+                  const DEFAULT_ADMIN_TABS: Record<string, boolean> = { support_chats: true, overview: true, notifications: true, analytics: true, landmarks: true, users: true, conversations: true, live_users: true, visitors: true, locations: true, welcome_media: true, settings: true, audit_log: true, reports: true, static_content: true, safety_data: true, banners: true, invitations: true, vip_codes: true };
                   const tabVis: Record<string, boolean> = (() => { try { return { ...DEFAULT_ADMIN_TABS, ...JSON.parse(appSettings.admin_tabs_visibility || "{}") }; } catch { return { ...DEFAULT_ADMIN_TABS }; } })();
                   const TAB_META = [
                     { key: "overview",      labelAr: "الرئيسية",   color: "text-primary",    bg: "bg-primary/15",    border: "border-primary/30" },
@@ -4089,6 +4127,7 @@ export default function Admin() {
                     { key: "audit_log",     labelAr: "السجل",      color: "text-purple-400", bg: "bg-purple-500/15", border: "border-purple-500/30" },
                     { key: "reports",       labelAr: "التقارير",   color: "text-teal-400",   bg: "bg-teal-500/15",   border: "border-teal-500/30" },
                     { key: "static_content",labelAr: "المحتوى",    color: "text-pink-400",   bg: "bg-pink-500/15",   border: "border-pink-500/30" },
+                    { key: "safety_data",   labelAr: "بيانات السلامة", color: "text-emerald-400", bg: "bg-emerald-500/15", border: "border-emerald-500/30" },
                     { key: "banners",       labelAr: "البانرات",   color: "text-amber-400",  bg: "bg-amber-500/15",  border: "border-amber-500/30" },
                     { key: "invitations",   labelAr: "الدعوات",    color: "text-rose-400",   bg: "bg-rose-500/15",   border: "border-rose-500/30" },
                     { key: "vip_codes",     labelAr: "كودات VIP",  color: "text-yellow-400", bg: "bg-yellow-500/15", border: "border-yellow-500/30" },
@@ -4499,6 +4538,298 @@ export default function Admin() {
                       <li>أضف المفاتيح الجديدة في supabase_app_settings.sql</li>
                     </ul>
                   </div>
+                </div>
+              );
+            })()}
+
+            {tab === "safety_data" && (() => {
+              const SEVERITY_OPTS = ["high", "medium", "low"] as const;
+              const SEVERITY_COLORS: Record<string, string> = { high: "text-red-400 bg-red-500/10 border-red-500/20", medium: "text-amber-400 bg-amber-500/10 border-amber-500/20", low: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" };
+
+              async function saveContact() {
+                if (!safetyContactForm.name.trim() || !safetyContactForm.number.trim()) return;
+                setSafetySaving(true);
+                if (safetyEditId) {
+                  await supabase.from("emergency_contacts").update({ name: safetyContactForm.name.trim(), name_ar: safetyContactForm.name_ar.trim() || null, number: safetyContactForm.number.trim(), description: safetyContactForm.description.trim() || null, description_ar: safetyContactForm.description_ar.trim() || null, category: safetyContactForm.category, available_hours: safetyContactForm.available_hours, sort_order: Number(safetyContactForm.sort_order) }).eq("id", safetyEditId);
+                } else {
+                  await supabase.from("emergency_contacts").insert({ name: safetyContactForm.name.trim(), name_ar: safetyContactForm.name_ar.trim() || null, number: safetyContactForm.number.trim(), description: safetyContactForm.description.trim() || null, description_ar: safetyContactForm.description_ar.trim() || null, category: safetyContactForm.category, available_hours: safetyContactForm.available_hours, sort_order: Number(safetyContactForm.sort_order), is_active: true });
+                }
+                setSafetySaving(false); setSafetyFormOpen(false); setSafetyEditId(null);
+                setSafetyContactForm({ name: "", name_ar: "", number: "", description: "", description_ar: "", category: "general", available_hours: "24/7", sort_order: 0 });
+                setSafetyLoaded(false); loadSafetyData();
+              }
+
+              async function saveScam() {
+                if (!safetyScamForm.title.trim() || !safetyScamForm.description.trim() || !safetyScamForm.how_to_avoid.trim()) return;
+                setSafetySaving(true);
+                if (safetyEditId) {
+                  await supabase.from("common_scams").update({ title: safetyScamForm.title.trim(), title_ar: safetyScamForm.title_ar.trim() || null, description: safetyScamForm.description.trim(), description_ar: safetyScamForm.description_ar.trim() || null, how_to_avoid: safetyScamForm.how_to_avoid.trim(), how_to_avoid_ar: safetyScamForm.how_to_avoid_ar.trim() || null, severity: safetyScamForm.severity, sort_order: Number(safetyScamForm.sort_order) }).eq("id", safetyEditId);
+                } else {
+                  await supabase.from("common_scams").insert({ title: safetyScamForm.title.trim(), title_ar: safetyScamForm.title_ar.trim() || null, description: safetyScamForm.description.trim(), description_ar: safetyScamForm.description_ar.trim() || null, how_to_avoid: safetyScamForm.how_to_avoid.trim(), how_to_avoid_ar: safetyScamForm.how_to_avoid_ar.trim() || null, severity: safetyScamForm.severity, sort_order: Number(safetyScamForm.sort_order), is_active: true });
+                }
+                setSafetySaving(false); setSafetyFormOpen(false); setSafetyEditId(null);
+                setSafetyScamForm({ title: "", title_ar: "", description: "", description_ar: "", how_to_avoid: "", how_to_avoid_ar: "", severity: "medium", sort_order: 0 });
+                setSafetyLoaded(false); loadSafetyData();
+              }
+
+              async function saveRight() {
+                if (!safetyRightForm.title.trim() || !safetyRightForm.description.trim()) return;
+                setSafetySaving(true);
+                if (safetyEditId) {
+                  await supabase.from("tourist_rights").update({ title: safetyRightForm.title.trim(), title_ar: safetyRightForm.title_ar.trim() || null, description: safetyRightForm.description.trim(), description_ar: safetyRightForm.description_ar.trim() || null, icon: safetyRightForm.icon.trim() || null, sort_order: Number(safetyRightForm.sort_order) }).eq("id", safetyEditId);
+                } else {
+                  await supabase.from("tourist_rights").insert({ title: safetyRightForm.title.trim(), title_ar: safetyRightForm.title_ar.trim() || null, description: safetyRightForm.description.trim(), description_ar: safetyRightForm.description_ar.trim() || null, icon: safetyRightForm.icon.trim() || null, sort_order: Number(safetyRightForm.sort_order), is_active: true });
+                }
+                setSafetySaving(false); setSafetyFormOpen(false); setSafetyEditId(null);
+                setSafetyRightForm({ title: "", title_ar: "", description: "", description_ar: "", icon: "", sort_order: 0 });
+                setSafetyLoaded(false); loadSafetyData();
+              }
+
+              async function toggleActive(table: string, id: string, current: boolean) {
+                await supabase.from(table).update({ is_active: !current }).eq("id", id);
+                setSafetyLoaded(false); loadSafetyData();
+              }
+
+              async function deleteRow(table: string, id: string) {
+                if (!confirm("حذف نهائي؟")) return;
+                await supabase.from(table).delete().eq("id", id);
+                setSafetyLoaded(false); loadSafetyData();
+              }
+
+              const inputCls = "w-full bg-card border border-border/60 rounded-xl px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/60";
+              const labelCls = "block text-[11px] font-bold text-muted-foreground mb-1 uppercase tracking-wider";
+
+              return (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                      <h2 className="font-bold text-base">بيانات السلامة</h2>
+                    </div>
+                    <button onClick={() => { setSafetyLoaded(false); loadSafetyData(); }} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground border border-border/40 rounded-lg px-3 py-1.5">
+                      <RefreshCw className="w-3.5 h-3.5" /> تحديث
+                    </button>
+                  </div>
+
+                  {/* Sub-tabs */}
+                  <div className="flex gap-2 border-b border-border/40 pb-2">
+                    {([["contacts","أرقام الطوارئ",safetyContacts.length],["scams","عمليات النصب",safetyScams.length],["rights","حقوق السياح",safetyRights.length]] as const).map(([k, lbl, cnt]) => (
+                      <button key={k} onClick={() => { setSafetySubTab(k as "contacts"|"scams"|"rights"); setSafetyFormOpen(false); setSafetyEditId(null); }}
+                        className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all", safetySubTab === k ? "bg-emerald-500/15 text-emerald-400 border-emerald-500/30" : "bg-muted/20 text-muted-foreground border-border/40 hover:border-border")}>
+                        {lbl} <span className="opacity-60">({cnt})</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {safetyLoading ? (
+                    <div className="flex justify-center py-10"><div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" /></div>
+                  ) : (
+                    <>
+                      {/* ── Emergency Contacts ── */}
+                      {safetySubTab === "contacts" && (
+                        <div className="space-y-3">
+                          <button onClick={() => { setSafetyFormOpen(true); setSafetyEditId(null); setSafetyContactForm({ name:"",name_ar:"",number:"",description:"",description_ar:"",category:"general",available_hours:"24/7",sort_order:safetyContacts.length }); }}
+                            className="w-full flex items-center justify-center gap-2 border border-dashed border-emerald-500/40 rounded-xl py-2.5 text-xs font-bold text-emerald-400 hover:bg-emerald-500/5 transition-colors">
+                            <Plus className="w-4 h-4" /> إضافة رقم طوارئ
+                          </button>
+
+                          {safetyFormOpen && !safetyEditId && (
+                            <div className="bg-card border border-emerald-500/20 rounded-2xl p-4 space-y-3">
+                              <p className="text-xs font-bold text-emerald-400">رقم طوارئ جديد</p>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div><label className={labelCls}>الاسم</label><input className={inputCls} value={safetyContactForm.name} onChange={e => setSafetyContactForm(f=>({...f,name:e.target.value}))} placeholder="Tourist Police" /></div>
+                                <div><label className={labelCls}>الاسم بالعربي</label><input className={inputCls} value={safetyContactForm.name_ar} onChange={e => setSafetyContactForm(f=>({...f,name_ar:e.target.value}))} placeholder="شرطة السياحة" dir="rtl" /></div>
+                                <div><label className={labelCls}>الرقم</label><input className={inputCls} value={safetyContactForm.number} onChange={e => setSafetyContactForm(f=>({...f,number:e.target.value}))} placeholder="126" /></div>
+                                <div><label className={labelCls}>الفئة</label><input className={inputCls} value={safetyContactForm.category} onChange={e => setSafetyContactForm(f=>({...f,category:e.target.value}))} placeholder="police" /></div>
+                                <div><label className={labelCls}>ساعات العمل</label><input className={inputCls} value={safetyContactForm.available_hours} onChange={e => setSafetyContactForm(f=>({...f,available_hours:e.target.value}))} placeholder="24/7" /></div>
+                                <div><label className={labelCls}>الترتيب</label><input type="number" className={inputCls} value={safetyContactForm.sort_order} onChange={e => setSafetyContactForm(f=>({...f,sort_order:+e.target.value}))} /></div>
+                                <div className="col-span-2"><label className={labelCls}>الوصف</label><input className={inputCls} value={safetyContactForm.description} onChange={e => setSafetyContactForm(f=>({...f,description:e.target.value}))} placeholder="Description" /></div>
+                                <div className="col-span-2"><label className={labelCls}>الوصف بالعربي</label><input className={inputCls} value={safetyContactForm.description_ar} onChange={e => setSafetyContactForm(f=>({...f,description_ar:e.target.value}))} placeholder="الوصف" dir="rtl" /></div>
+                              </div>
+                              <div className="flex gap-2 pt-1">
+                                <button onClick={saveContact} disabled={safetySaving} className="flex-1 bg-emerald-600 text-white rounded-xl py-2 text-xs font-bold disabled:opacity-50">{safetySaving ? "حفظ..." : "حفظ"}</button>
+                                <button onClick={() => { setSafetyFormOpen(false); setSafetyEditId(null); }} className="flex-1 border border-border/50 text-muted-foreground rounded-xl py-2 text-xs font-bold">إلغاء</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {safetyContacts.map(c => (
+                            <div key={c.id} className="bg-card border border-border/50 rounded-xl p-3">
+                              {safetyFormOpen && safetyEditId === c.id ? (
+                                <div className="space-y-3">
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div><label className={labelCls}>الاسم</label><input className={inputCls} value={safetyContactForm.name} onChange={e => setSafetyContactForm(f=>({...f,name:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>الاسم بالعربي</label><input className={inputCls} value={safetyContactForm.name_ar} onChange={e => setSafetyContactForm(f=>({...f,name_ar:e.target.value}))} dir="rtl" /></div>
+                                    <div><label className={labelCls}>الرقم</label><input className={inputCls} value={safetyContactForm.number} onChange={e => setSafetyContactForm(f=>({...f,number:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>الفئة</label><input className={inputCls} value={safetyContactForm.category} onChange={e => setSafetyContactForm(f=>({...f,category:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>ساعات العمل</label><input className={inputCls} value={safetyContactForm.available_hours} onChange={e => setSafetyContactForm(f=>({...f,available_hours:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>الترتيب</label><input type="number" className={inputCls} value={safetyContactForm.sort_order} onChange={e => setSafetyContactForm(f=>({...f,sort_order:+e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>الوصف</label><input className={inputCls} value={safetyContactForm.description} onChange={e => setSafetyContactForm(f=>({...f,description:e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>الوصف بالعربي</label><input className={inputCls} value={safetyContactForm.description_ar} onChange={e => setSafetyContactForm(f=>({...f,description_ar:e.target.value}))} dir="rtl" /></div>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button onClick={saveContact} disabled={safetySaving} className="flex-1 bg-emerald-600 text-white rounded-xl py-2 text-xs font-bold disabled:opacity-50">{safetySaving?"حفظ...":"حفظ"}</button>
+                                    <button onClick={() => { setSafetyFormOpen(false); setSafetyEditId(null); }} className="flex-1 border border-border/50 text-muted-foreground rounded-xl py-2 text-xs font-bold">إلغاء</button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-3">
+                                  <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-[11px] font-black", c.is_active ? "bg-emerald-500/15 text-emerald-400" : "bg-muted/30 text-muted-foreground")}>{c.number}</div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-semibold truncate">{c.name} {c.name_ar && <span className="text-muted-foreground">({c.name_ar})</span>}</p>
+                                    <p className="text-[10px] text-muted-foreground truncate">{c.description}</p>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 shrink-0">
+                                    <button onClick={() => toggleActive("emergency_contacts", c.id, c.is_active)} className={cn("text-[10px] border px-2 py-1 rounded-lg font-bold", c.is_active ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-muted-foreground border-border/40")}>
+                                      {c.is_active ? "فعّال" : "معطّل"}
+                                    </button>
+                                    <button onClick={() => { setSafetyEditId(c.id); setSafetyFormOpen(true); setSafetyContactForm({ name:c.name, name_ar:c.name_ar||"", number:c.number, description:c.description||"", description_ar:c.description_ar||"", category:c.category, available_hours:c.available_hours, sort_order:c.sort_order }); }} className="text-muted-foreground hover:text-foreground p-1"><Pencil className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => deleteRow("emergency_contacts", c.id)} className="text-muted-foreground hover:text-destructive p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* ── Common Scams ── */}
+                      {safetySubTab === "scams" && (
+                        <div className="space-y-3">
+                          <button onClick={() => { setSafetyFormOpen(true); setSafetyEditId(null); setSafetyScamForm({ title:"",title_ar:"",description:"",description_ar:"",how_to_avoid:"",how_to_avoid_ar:"",severity:"medium",sort_order:safetyScams.length }); }}
+                            className="w-full flex items-center justify-center gap-2 border border-dashed border-amber-500/40 rounded-xl py-2.5 text-xs font-bold text-amber-400 hover:bg-amber-500/5 transition-colors">
+                            <Plus className="w-4 h-4" /> إضافة عملية نصب
+                          </button>
+
+                          {safetyFormOpen && !safetyEditId && (
+                            <div className="bg-card border border-amber-500/20 rounded-2xl p-4 space-y-3">
+                              <p className="text-xs font-bold text-amber-400">عملية نصب جديدة</p>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div><label className={labelCls}>العنوان</label><input className={inputCls} value={safetyScamForm.title} onChange={e => setSafetyScamForm(f=>({...f,title:e.target.value}))} placeholder="Fake Tour Guide" /></div>
+                                <div><label className={labelCls}>العنوان بالعربي</label><input className={inputCls} value={safetyScamForm.title_ar} onChange={e => setSafetyScamForm(f=>({...f,title_ar:e.target.value}))} placeholder="مرشد مزيف" dir="rtl" /></div>
+                                <div><label className={labelCls}>مستوى الخطر</label>
+                                  <select className={inputCls} value={safetyScamForm.severity} onChange={e => setSafetyScamForm(f=>({...f,severity:e.target.value}))}>
+                                    {SEVERITY_OPTS.map(s => <option key={s} value={s}>{s}</option>)}
+                                  </select>
+                                </div>
+                                <div><label className={labelCls}>الترتيب</label><input type="number" className={inputCls} value={safetyScamForm.sort_order} onChange={e => setSafetyScamForm(f=>({...f,sort_order:+e.target.value}))} /></div>
+                                <div className="col-span-2"><label className={labelCls}>الوصف</label><textarea className={inputCls} rows={2} value={safetyScamForm.description} onChange={e => setSafetyScamForm(f=>({...f,description:e.target.value}))} placeholder="Description of the scam..." /></div>
+                                <div className="col-span-2"><label className={labelCls}>الوصف بالعربي</label><textarea className={inputCls} rows={2} value={safetyScamForm.description_ar} onChange={e => setSafetyScamForm(f=>({...f,description_ar:e.target.value}))} dir="rtl" /></div>
+                                <div className="col-span-2"><label className={labelCls}>كيفية التجنب</label><textarea className={inputCls} rows={2} value={safetyScamForm.how_to_avoid} onChange={e => setSafetyScamForm(f=>({...f,how_to_avoid:e.target.value}))} placeholder="How to avoid..." /></div>
+                                <div className="col-span-2"><label className={labelCls}>كيفية التجنب بالعربي</label><textarea className={inputCls} rows={2} value={safetyScamForm.how_to_avoid_ar} onChange={e => setSafetyScamForm(f=>({...f,how_to_avoid_ar:e.target.value}))} dir="rtl" /></div>
+                              </div>
+                              <div className="flex gap-2 pt-1">
+                                <button onClick={saveScam} disabled={safetySaving} className="flex-1 bg-amber-600 text-white rounded-xl py-2 text-xs font-bold disabled:opacity-50">{safetySaving?"حفظ...":"حفظ"}</button>
+                                <button onClick={() => { setSafetyFormOpen(false); setSafetyEditId(null); }} className="flex-1 border border-border/50 text-muted-foreground rounded-xl py-2 text-xs font-bold">إلغاء</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {safetyScams.map(s => (
+                            <div key={s.id} className="bg-card border border-border/50 rounded-xl p-3">
+                              {safetyFormOpen && safetyEditId === s.id ? (
+                                <div className="space-y-3">
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div><label className={labelCls}>العنوان</label><input className={inputCls} value={safetyScamForm.title} onChange={e => setSafetyScamForm(f=>({...f,title:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>العنوان بالعربي</label><input className={inputCls} value={safetyScamForm.title_ar} onChange={e => setSafetyScamForm(f=>({...f,title_ar:e.target.value}))} dir="rtl" /></div>
+                                    <div><label className={labelCls}>مستوى الخطر</label>
+                                      <select className={inputCls} value={safetyScamForm.severity} onChange={e => setSafetyScamForm(f=>({...f,severity:e.target.value}))}>
+                                        {SEVERITY_OPTS.map(sv => <option key={sv} value={sv}>{sv}</option>)}
+                                      </select>
+                                    </div>
+                                    <div><label className={labelCls}>الترتيب</label><input type="number" className={inputCls} value={safetyScamForm.sort_order} onChange={e => setSafetyScamForm(f=>({...f,sort_order:+e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>الوصف</label><textarea className={inputCls} rows={2} value={safetyScamForm.description} onChange={e => setSafetyScamForm(f=>({...f,description:e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>الوصف بالعربي</label><textarea className={inputCls} rows={2} value={safetyScamForm.description_ar} onChange={e => setSafetyScamForm(f=>({...f,description_ar:e.target.value}))} dir="rtl" /></div>
+                                    <div className="col-span-2"><label className={labelCls}>كيفية التجنب</label><textarea className={inputCls} rows={2} value={safetyScamForm.how_to_avoid} onChange={e => setSafetyScamForm(f=>({...f,how_to_avoid:e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>كيفية التجنب بالعربي</label><textarea className={inputCls} rows={2} value={safetyScamForm.how_to_avoid_ar} onChange={e => setSafetyScamForm(f=>({...f,how_to_avoid_ar:e.target.value}))} dir="rtl" /></div>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button onClick={saveScam} disabled={safetySaving} className="flex-1 bg-amber-600 text-white rounded-xl py-2 text-xs font-bold disabled:opacity-50">{safetySaving?"حفظ...":"حفظ"}</button>
+                                    <button onClick={() => { setSafetyFormOpen(false); setSafetyEditId(null); }} className="flex-1 border border-border/50 text-muted-foreground rounded-xl py-2 text-xs font-bold">إلغاء</button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-start gap-3">
+                                  <span className={cn("text-[10px] border px-2 py-1 rounded-full font-bold shrink-0 mt-0.5", SEVERITY_COLORS[s.severity] ?? SEVERITY_COLORS.low)}>{s.severity}</span>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-semibold">{s.title} {s.title_ar && <span className="text-muted-foreground">({s.title_ar})</span>}</p>
+                                    <p className="text-[10px] text-muted-foreground line-clamp-1">{s.description}</p>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 shrink-0">
+                                    <button onClick={() => toggleActive("common_scams", s.id, s.is_active)} className={cn("text-[10px] border px-2 py-1 rounded-lg font-bold", s.is_active ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-muted-foreground border-border/40")}>{s.is_active ? "فعّال" : "معطّل"}</button>
+                                    <button onClick={() => { setSafetyEditId(s.id); setSafetyFormOpen(true); setSafetyScamForm({ title:s.title, title_ar:s.title_ar||"", description:s.description, description_ar:s.description_ar||"", how_to_avoid:s.how_to_avoid, how_to_avoid_ar:s.how_to_avoid_ar||"", severity:s.severity, sort_order:s.sort_order }); }} className="text-muted-foreground hover:text-foreground p-1"><Pencil className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => deleteRow("common_scams", s.id)} className="text-muted-foreground hover:text-destructive p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* ── Tourist Rights ── */}
+                      {safetySubTab === "rights" && (
+                        <div className="space-y-3">
+                          <button onClick={() => { setSafetyFormOpen(true); setSafetyEditId(null); setSafetyRightForm({ title:"",title_ar:"",description:"",description_ar:"",icon:"",sort_order:safetyRights.length }); }}
+                            className="w-full flex items-center justify-center gap-2 border border-dashed border-blue-500/40 rounded-xl py-2.5 text-xs font-bold text-blue-400 hover:bg-blue-500/5 transition-colors">
+                            <Plus className="w-4 h-4" /> إضافة حق سياحي
+                          </button>
+
+                          {safetyFormOpen && !safetyEditId && (
+                            <div className="bg-card border border-blue-500/20 rounded-2xl p-4 space-y-3">
+                              <p className="text-xs font-bold text-blue-400">حق سياحي جديد</p>
+                              <div className="grid grid-cols-2 gap-2">
+                                <div><label className={labelCls}>العنوان</label><input className={inputCls} value={safetyRightForm.title} onChange={e => setSafetyRightForm(f=>({...f,title:e.target.value}))} placeholder="Right to Licensed Guides" /></div>
+                                <div><label className={labelCls}>العنوان بالعربي</label><input className={inputCls} value={safetyRightForm.title_ar} onChange={e => setSafetyRightForm(f=>({...f,title_ar:e.target.value}))} placeholder="حق المرشد المرخص" dir="rtl" /></div>
+                                <div><label className={labelCls}>أيقونة</label><input className={inputCls} value={safetyRightForm.icon} onChange={e => setSafetyRightForm(f=>({...f,icon:e.target.value}))} placeholder="⚖️ (اختياري)" /></div>
+                                <div><label className={labelCls}>الترتيب</label><input type="number" className={inputCls} value={safetyRightForm.sort_order} onChange={e => setSafetyRightForm(f=>({...f,sort_order:+e.target.value}))} /></div>
+                                <div className="col-span-2"><label className={labelCls}>الوصف</label><textarea className={inputCls} rows={2} value={safetyRightForm.description} onChange={e => setSafetyRightForm(f=>({...f,description:e.target.value}))} placeholder="Description..." /></div>
+                                <div className="col-span-2"><label className={labelCls}>الوصف بالعربي</label><textarea className={inputCls} rows={2} value={safetyRightForm.description_ar} onChange={e => setSafetyRightForm(f=>({...f,description_ar:e.target.value}))} dir="rtl" /></div>
+                              </div>
+                              <div className="flex gap-2 pt-1">
+                                <button onClick={saveRight} disabled={safetySaving} className="flex-1 bg-blue-600 text-white rounded-xl py-2 text-xs font-bold disabled:opacity-50">{safetySaving?"حفظ...":"حفظ"}</button>
+                                <button onClick={() => { setSafetyFormOpen(false); setSafetyEditId(null); }} className="flex-1 border border-border/50 text-muted-foreground rounded-xl py-2 text-xs font-bold">إلغاء</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {safetyRights.map((r, idx) => (
+                            <div key={r.id} className="bg-card border border-border/50 rounded-xl p-3">
+                              {safetyFormOpen && safetyEditId === r.id ? (
+                                <div className="space-y-3">
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div><label className={labelCls}>العنوان</label><input className={inputCls} value={safetyRightForm.title} onChange={e => setSafetyRightForm(f=>({...f,title:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>العنوان بالعربي</label><input className={inputCls} value={safetyRightForm.title_ar} onChange={e => setSafetyRightForm(f=>({...f,title_ar:e.target.value}))} dir="rtl" /></div>
+                                    <div><label className={labelCls}>أيقونة</label><input className={inputCls} value={safetyRightForm.icon} onChange={e => setSafetyRightForm(f=>({...f,icon:e.target.value}))} /></div>
+                                    <div><label className={labelCls}>الترتيب</label><input type="number" className={inputCls} value={safetyRightForm.sort_order} onChange={e => setSafetyRightForm(f=>({...f,sort_order:+e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>الوصف</label><textarea className={inputCls} rows={2} value={safetyRightForm.description} onChange={e => setSafetyRightForm(f=>({...f,description:e.target.value}))} /></div>
+                                    <div className="col-span-2"><label className={labelCls}>الوصف بالعربي</label><textarea className={inputCls} rows={2} value={safetyRightForm.description_ar} onChange={e => setSafetyRightForm(f=>({...f,description_ar:e.target.value}))} dir="rtl" /></div>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button onClick={saveRight} disabled={safetySaving} className="flex-1 bg-blue-600 text-white rounded-xl py-2 text-xs font-bold disabled:opacity-50">{safetySaving?"حفظ...":"حفظ"}</button>
+                                    <button onClick={() => { setSafetyFormOpen(false); setSafetyEditId(null); }} className="flex-1 border border-border/50 text-muted-foreground rounded-xl py-2 text-xs font-bold">إلغاء</button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-start gap-3">
+                                  <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0 text-sm">{r.icon || (idx+1)}</div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-semibold">{r.title} {r.title_ar && <span className="text-muted-foreground">({r.title_ar})</span>}</p>
+                                    <p className="text-[10px] text-muted-foreground line-clamp-1">{r.description}</p>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 shrink-0">
+                                    <button onClick={() => toggleActive("tourist_rights", r.id, r.is_active)} className={cn("text-[10px] border px-2 py-1 rounded-lg font-bold", r.is_active ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-muted-foreground border-border/40")}>{r.is_active ? "فعّال" : "معطّل"}</button>
+                                    <button onClick={() => { setSafetyEditId(r.id); setSafetyFormOpen(true); setSafetyRightForm({ title:r.title, title_ar:r.title_ar||"", description:r.description, description_ar:r.description_ar||"", icon:r.icon||"", sort_order:r.sort_order }); }} className="text-muted-foreground hover:text-foreground p-1"><Pencil className="w-3.5 h-3.5" /></button>
+                                    <button onClick={() => deleteRow("tourist_rights", r.id)} className="text-muted-foreground hover:text-destructive p-1"><Trash2 className="w-3.5 h-3.5" /></button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               );
             })()}

@@ -197,34 +197,6 @@ const landmarks = [
   }
 ];
 
-const touristRights = [
-  { id: "1", title: "Right to a Receipt", titleAr: "الحق في إيصال", category: "Commerce", description: "You have the right to receive an official receipt for all purchases over 50 EGP. Demand one from shops and restaurants.", icon: "receipt" },
-  { id: "2", title: "Fixed Ticket Prices", titleAr: "أسعار تذاكر ثابتة", category: "Admission", description: "All government-run sites have fixed admission prices. These must be displayed at the entrance. Report overcharging to tourist police.", icon: "ticket" },
-  { id: "3", title: "Licensed Guides Only", titleAr: "مرشدون مرخصون فقط", category: "Guides", description: "Tour guides must carry an official government license. You can ask to see it. Unlicensed guides are illegal.", icon: "badge" },
-  { id: "4", title: "Metered Taxis", titleAr: "تاكسي بعداد", category: "Transport", description: "Taxis are required to use meters or agree on a price before the journey begins. Agree on the price first to avoid disputes.", icon: "car" },
-  { id: "5", title: "Tourist Police Assistance", titleAr: "مساعدة الشرطة السياحية", category: "Safety", description: "Tourist police are stationed at all major sites and speak English. Call 126 for tourist police assistance.", icon: "shield" },
-  { id: "6", title: "No Pressure to Buy", titleAr: "لا إلزام بالشراء", category: "Commerce", description: "Shop owners may not pressure, follow, or harass tourists. You have the right to browse and leave without buying.", icon: "hand" },
-];
-
-const emergencyContacts = [
-  { id: "1", name: "Tourist Police", number: "126", description: "24/7 assistance for tourists at all major attractions", available: "24/7" },
-  { id: "2", name: "Ambulance", number: "123", description: "National emergency medical services", available: "24/7" },
-  { id: "3", name: "Fire Department", number: "180", description: "Fire and rescue services", available: "24/7" },
-  { id: "4", name: "Police", number: "122", description: "General police emergency", available: "24/7" },
-  { id: "5", name: "Egyptian Tourism Authority", number: "19006", description: "Tourism complaints and information hotline", available: "9am–5pm" },
-  { id: "6", name: "Hurghada Hospital", number: "+20 65 354 9099", description: "Main hospital in Hurghada", available: "24/7" },
-  { id: "7", name: "Cairo International Hospital", number: "+20 2 2363 8050", description: "Main international hospital in Cairo", available: "24/7" },
-];
-
-const commonScams = [
-  { id: "1", title: "The Papyrus Shop Diversion", description: "Drivers claim your destination is 'closed today' and offer to take you to their family's shop instead.", severity: "high", howToAvoid: "Insist on going to your planned destination. Call ahead to confirm opening hours. If the driver refuses, get out and find another." },
-  { id: "2", title: "Camel Ride Price Switch", description: "You're quoted a low price for a camel ride, then charged multiple times the agreed price at the end.", severity: "high", howToAvoid: "Agree on the full price in writing before mounting. Clarify that the price is for the complete ride, including getting off." },
-  { id: "3", title: "The Friendly Local", description: "Someone befriends you, walks you around, then demands payment for their 'guide' services at the end.", severity: "medium", howToAvoid: "Politely but firmly decline unsolicited guidance. Only use officially licensed guides booked through your hotel or reputable agencies." },
-  { id: "4", title: "Fake Antiques", description: "Vendors sell 'ancient artifacts' that are actually cheap reproductions made in factories.", severity: "medium", howToAvoid: "Genuine antiquities cannot be exported legally. Be suspicious of any 'ancient' item being sold freely. Buy from reputable shops with receipts." },
-  { id: "5", title: "Currency Exchange Tricks", description: "Money changers give you a good rate but count money quickly, shortchanging you in the process.", severity: "medium", howToAvoid: "Always count your money carefully before leaving the exchange booth. Use bank ATMs or official exchange offices in hotels." },
-  { id: "6", title: "The Free Gift Trick", description: "Someone places a bracelet or item in your hands as a 'free gift', then aggressively demands payment.", severity: "low", howToAvoid: "Firmly refuse any unsolicited gifts. Immediately return the item and walk away. Do not engage further." },
-  { id: "7", title: "Overpriced Horse Carriage", description: "Carriage rides at tourist sites often start with no price quoted, leading to demands for huge fees.", severity: "low", howToAvoid: "Always negotiate and agree on a specific price for the complete journey before boarding. Use round numbers to avoid change scams." },
-];
 
 function normalizeLandmark(l: typeof landmarks[number]) {
   return { ...l, entryFee: l.ticketPrice, descriptionAr: l.nameAr };
@@ -259,18 +231,6 @@ router.get("/landmarks/:id", (req, res) => {
     return;
   }
   res.json(normalizeLandmark(landmark));
-});
-
-router.get("/tourist-rights", (_req, res) => {
-  res.json(touristRights);
-});
-
-router.get("/emergency-contacts", (_req, res) => {
-  res.json(emergencyContacts);
-});
-
-router.get("/common-scams", (_req, res) => {
-  res.json(commonScams);
 });
 
 export default router;
