@@ -44,9 +44,9 @@ export default defineConfig({
       },
       manifest: {
         id: basePath,
-        name: "Khety Guide – دليل الفراعنة",
-        short_name: "Khety Guide",
-        description: "دليلك الشامل لاستكشاف المعالم الأثرية والسياحية في مصر",
+        name: "Khety – رفيق كيميت",
+        short_name: "Khety",
+        description: "رفيقك الذكي في أرض كيميت — اكتشف الآثار الفرعونية كما لم تستكشفها من قبل",
         start_url: base,
         scope: base,
         display: "standalone",

@@ -33,7 +33,7 @@ self.addEventListener("push", (event: PushEvent) => {
   try {
     payload = event.data.json();
   } catch {
-    payload = { title: "Khety Guide", body: event.data.text() };
+    payload = { title: "Khety", body: event.data.text() };
   }
 
   const scope = self.registration.scope;

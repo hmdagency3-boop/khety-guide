@@ -335,7 +335,7 @@
   },
   "auth": {
     "welcome_back": "Bienvenido de vuelta",
-    "sign_in_account": "Inicia sesión en tu cuenta Khety Guide",
+    "sign_in_account": "Inicia sesión en Khety",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "confirm_password": "Confirmar contraseña",
@@ -519,9 +519,9 @@
     "unknown_user": "Desconocido",
     "no_invitees": "Nadie se ha unido todavía",
     "no_invitees_desc": "¡Comparte tu código y empieza a coleccionar puntos dorados!",
-    "share_title": "Únete a Khety Guide",
-    "share_text": "Únete conmigo en Khety Guide — tu guía turística faraónica inteligente 🏛️\nUsa el código: ",
-    "whatsapp_text": "🏛️ Únete conmigo en *Khety Guide* — ¡tu guía turística faraónica inteligente!\n\nUsa el enlace de invitación:\n",
+    "share_title": "Únete a Khety en la tierra de Kemet",
+    "share_text": "Únete conmigo en Khety — tu compañero IA en la tierra de Kemet 🏛️\nUsa el código: ",
+    "whatsapp_text": "🏛️ Únete conmigo en *Khety Guide* — ¡tu compañero IA en la tierra de Kemet!\n\nUsa el enlace de invitación:\n",
     "ranks": {
       "novice": "Novato de Referidos",
       "spreader": "Difusor de Civilización",
@@ -534,7 +534,7 @@
   },
   "pricing": {
     "title": "Elige tu Plan",
-    "subtitle": "Desbloquea el poder completo de Khety Guide y explora el Antiguo Egipto como nunca antes.",
+    "subtitle": "Desbloquea el poder completo de Khety y explora la tierra de Kemet como nunca antes.",
     "monthly": "Mensual",
     "yearly": "Anual",
     "save_25": "Ahorra 25%",

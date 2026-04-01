@@ -13,6 +13,8 @@ import { useLandmarks } from "@/hooks/useLandmarks";
 import { useTranslation } from "react-i18next";
 import { ARCameraModal } from "@/components/ARCameraModal";
 import { GoldenAgeModal } from "@/components/GoldenAgeModal";
+import { CameraPermissionSheet } from "@/components/CameraPermissionSheet";
+import { useCameraPermission } from "@/hooks/useCameraPermission";
 
 const POLL_INTERVAL_MS = 2000;
 const POLL_TIMEOUT_MS  = 60000;
@@ -308,8 +310,10 @@ export default function Chat() {
   const [imageFile,    setImageFile]    = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading,  setIsUploading]  = useState(false);
-  const [showARCamera,  setShowARCamera]  = useState(false);
-  const [showGoldenAge, setShowGoldenAge] = useState(false);
+  const [showARCamera,      setShowARCamera]      = useState(false);
+  const [showCamPermSheet,  setShowCamPermSheet]  = useState(false);
+  const [showGoldenAge,     setShowGoldenAge]     = useState(false);
+  const { state: camPerm } = useCameraPermission();
   const [travelProfile, setTravelProfile] = useState<TravelProfile | null>(null);
 
   /* ── Conversation state ─────────────────────────────────────────── */
@@ -819,6 +823,13 @@ export default function Chat() {
       </div>
 
       {/* ── Modals ───────────────────────────────────────────────── */}
+      {showCamPermSheet && (
+        <CameraPermissionSheet
+          language={i18n.language}
+          onGranted={() => { setShowCamPermSheet(false); setShowARCamera(true); }}
+          onClose={() => setShowCamPermSheet(false)}
+        />
+      )}
       {showARCamera && (
         <ARCameraModal userId={user.id} language={i18n.language} onClose={() => setShowARCamera(false)} />
       )}
@@ -977,8 +988,17 @@ export default function Chat() {
             <ImagePlus className="w-4 h-4" />
           </button>
 
-          <button onClick={() => setShowARCamera(true)} disabled={isSending}
-                  className="shrink-0 p-2.5 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors mb-0.5 disabled:opacity-40 relative" title="AR Scanner">
+          <button
+            onClick={() => {
+              if (camPerm === "granted") {
+                setShowARCamera(true);
+              } else {
+                setShowCamPermSheet(true);
+              }
+            }}
+            disabled={isSending}
+            className="shrink-0 p-2.5 rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors mb-0.5 disabled:opacity-40 relative" title="AR Scanner"
+          >
             <ScanLine className="w-4 h-4" />
             <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
           </button>

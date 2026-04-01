@@ -177,16 +177,12 @@ export function InstallGate() {
               transition={{ delay: 0.2, duration: 0.5 }}
               className="relative mb-6"
             >
-              <div className="w-28 h-28 rounded-[2rem] bg-gradient-to-br from-amber-400 to-amber-700 shadow-2xl shadow-amber-500/30 flex items-center justify-center">
+              <div className="w-28 h-28 rounded-[2rem] shadow-2xl shadow-amber-500/30 overflow-hidden">
                 <img
-                  src="/icon-192.png"
+                  src="/icon-192-any.png"
                   alt="Khety"
-                  className="w-20 h-20 object-contain rounded-2xl"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).style.display = "none";
-                  }}
+                  className="w-full h-full object-cover"
                 />
-                <span className="absolute text-4xl font-black text-white tracking-tight" style={{ fontFamily: "serif", display: "none" }}>𓂀</span>
               </div>
               <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center shadow-lg">
                 <Smartphone className="w-4 h-4 text-amber-900" />
@@ -201,10 +197,10 @@ export function InstallGate() {
               className="text-center mb-2"
             >
               <h1 className="text-3xl font-black text-amber-400 mb-1" style={{ textShadow: "0 0 30px rgba(212,175,55,0.4)" }}>
-                Khety Guide
+                Khety
               </h1>
               <p className="text-sm text-amber-200/60">
-                {isRtl ? "خيتي · دليل مصر السياحي" : "Khety · Egypt Tourist Guide"}
+                {isRtl ? "خيتي · رفيقك في أرض كيميت" : "Khety · Your AI Companion in Kemet"}
               </p>
             </motion.div>
           </div>

@@ -190,7 +190,7 @@ export default function Register() {
           <div className="text-center mb-8">
             <div className="text-4xl mb-3">𓅓</div>
             <h1 className="text-2xl font-display font-black text-foreground">{t("auth.create_account")}</h1>
-            <p className="text-sm text-muted-foreground mt-1">Join the Khety Guide community</p>
+            <p className="text-sm text-muted-foreground mt-1">Join Khety — your AI companion in Kemet</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

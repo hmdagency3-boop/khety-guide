@@ -103,14 +103,14 @@ function InstallBanner({ onInstall, canInstall, isInstalled }: {
       <div className="absolute bottom-0 left-0 right-0 p-4 flex items-end justify-between gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5 text-amber-400">
-            Khety Guide
+            Khety · رفيق كيميت
           </p>
           <h3 className="text-sm font-display font-black text-white leading-tight">
             {isInstalled ? "التطبيق مثبّت على جهازك" : "حمّل التطبيق مجاناً"}
           </h3>
           <p className="text-[10px] text-white/60 mt-0.5 line-clamp-1">
             {isInstalled
-              ? "استمتع بتجربة دليل الفراعنة"
+              ? "رفيقك الذكي في رحلة أرض كيميت"
               : "تجربة أسرع وأفضل بدون إنترنت"
             }
           </p>
@@ -322,7 +322,7 @@ export function BannerCarousel() {
         style={{ color: banner.accent }}>𓇳</span>
       <div className={cn("absolute bottom-0 left-0 right-0 p-4", isRTL ? "text-right" : "text-left")}>
         <p className="text-[10px] font-bold uppercase tracking-widest mb-0.5" style={{ color: banner.accent }}>
-          Khety Guide
+          Khety · رفيق كيميت
         </p>
         <h3 className="text-base font-display font-black text-white leading-tight line-clamp-1">
           {isRTL && banner.title_ar ? banner.title_ar : banner.title}

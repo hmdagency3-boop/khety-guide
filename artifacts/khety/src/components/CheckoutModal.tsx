@@ -62,7 +62,7 @@ export function CheckoutModal({ clientSecret, onClose, onSuccess }: CheckoutModa
           <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-[#D4AF37] flex items-center justify-center text-black text-xs font-bold">K</div>
-              <span className="font-semibold text-gray-800 text-sm">Khety Guide</span>
+              <span className="font-semibold text-gray-800 text-sm">Khety</span>
             </div>
             <button
               onClick={onClose}

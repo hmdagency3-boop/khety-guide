@@ -656,7 +656,7 @@ export default function Admin() {
   const [vipCodes, setVipCodes]       = useState<VipCode[]>([]);
   const [vipLoading, setVipLoading]   = useState(false);
   const [vipLoaded, setVipLoaded]     = useState(false);
-  const [vipForm, setVipForm]         = useState({ code: "", welcome_title: "أهلاً بك في مجتمعنا", welcome_msg: "يسعدنا انضمامك إلى عائلة دليل الفراعنة", welcome_glyph: "𓇳", max_uses: "" });
+  const [vipForm, setVipForm]         = useState({ code: "", welcome_title: "أهلاً بك في مجتمعنا", welcome_msg: "يسعدنا انضمامك إلى عائلة خيتي في أرض كيميت", welcome_glyph: "𓇳", max_uses: "" });
   const [vipSaving, setVipSaving]     = useState(false);
   const [vipError, setVipError]       = useState<string | null>(null);
 
@@ -686,7 +686,7 @@ export default function Admin() {
     if (e) {
       setVipError(e.message);
     } else {
-      setVipForm({ code: "", welcome_title: "أهلاً بك في مجتمعنا", welcome_msg: "يسعدنا انضمامك إلى عائلة دليل الفراعنة", welcome_glyph: "𓇳", max_uses: "" });
+      setVipForm({ code: "", welcome_title: "أهلاً بك في مجتمعنا", welcome_msg: "يسعدنا انضمامك إلى عائلة خيتي في أرض كيميت", welcome_glyph: "𓇳", max_uses: "" });
       loadVipCodes();
     }
     setVipSaving(false);
@@ -4443,7 +4443,7 @@ export default function Admin() {
                   bg: "bg-pink-500/10",
                   border: "border-pink-500/20",
                   fields: [
-                    { key: "content_welcome_title", label: "العنوان الرئيسي", placeholder: "مرحباً بك في دليل الفراعنة", rows: 1, dir: "rtl" },
+                    { key: "content_welcome_title", label: "العنوان الرئيسي", placeholder: "مرحباً بك في رحلة أرض كيميت", rows: 1, dir: "rtl" },
                     { key: "content_welcome_subtitle", label: "النص الفرعي", placeholder: "اكتشف حضارة مصر العريقة مع خيتي", rows: 2, dir: "rtl" },
                   ],
                 },
@@ -4483,7 +4483,7 @@ export default function Admin() {
                   bg: "bg-amber-500/10",
                   border: "border-amber-500/20",
                   fields: [
-                    { key: "content_about", label: "نص من نحن", placeholder: "دليل الفراعنة — تطبيق سياحي يقدم...", rows: 4, dir: "rtl" },
+                    { key: "content_about", label: "نص من نحن", placeholder: "خيتي — رفيقك الذكي في أرض كيميت، يقدم...", rows: 4, dir: "rtl" },
                     { key: "content_contact_email", label: "البريد الإلكتروني للتواصل", placeholder: "hello@khetyguide.com", rows: 1, dir: "ltr" },
                   ],
                 },
@@ -4976,7 +4976,7 @@ export default function Admin() {
                       value={vipForm.welcome_msg}
                       onChange={e => setVipForm(f => ({ ...f, welcome_msg: e.target.value }))}
                       rows={2}
-                      placeholder="يسعدنا انضمامك إلى عائلة دليل الفراعنة"
+                      placeholder="يسعدنا انضمامك إلى عائلة خيتي في أرض كيميت"
                       className="w-full px-3 py-2 rounded-xl bg-background border border-border/60 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-yellow-400/40 resize-none"
                     />
                   </div>
@@ -5412,7 +5412,7 @@ export default function Admin() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute bottom-2 left-3 right-3">
-                    <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: b.accent }}>Khety Guide</p>
+                    <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: b.accent }}>Khety · رفيق كيميت</p>
                     <p className="text-xs font-display font-black text-white truncate">{b.title_ar || b.title || "عنوان البانر"}</p>
                     {(b.subtitle_ar || b.subtitle) && (
                       <p className="text-[9px] text-white/60 truncate">{b.subtitle_ar || b.subtitle}</p>
@@ -5552,7 +5552,7 @@ export default function Admin() {
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                       <div className="absolute bottom-2 left-3 right-3">
-                        <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: b.accent }}>Khety Guide</p>
+                        <p className="text-[9px] font-bold uppercase tracking-widest" style={{ color: b.accent }}>Khety · رفيق كيميت</p>
                         <p className="text-sm font-display font-black text-white truncate">{b.title_ar || b.title || "عنوان البانر"}</p>
                         {(b.subtitle_ar || b.subtitle) && (
                           <p className="text-[10px] text-white/60 truncate">{b.subtitle_ar || b.subtitle}</p>

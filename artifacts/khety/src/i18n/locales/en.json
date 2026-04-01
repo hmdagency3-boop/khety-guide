@@ -49,7 +49,7 @@
     },
     "ask_khety": "Ask Khety",
     "no_landmarks": "No landmarks found",
-    "guide_label": "KHETY GUIDE",
+    "guide_label": "KHETY",
     "greeting": "Hello, {{name}} 👋"
   },
   "explore": {
@@ -76,7 +76,7 @@
   },
   "chat": {
     "title": "Khety",
-    "subtitle": "Your Ancient Egyptian Guide",
+    "subtitle": "Your AI Companion in Kemet",
     "available": "Available now",
     "sign_in_title": "Speak with Khety",
     "sign_in_desc": "Sign in to begin your journey through the land of Kemet",
@@ -85,7 +85,7 @@
     "placeholder": "Ask Khety anything...",
     "clear": "Clear",
     "empty_title": "I am Khety",
-    "empty_subtitle": "Your Ancient Egyptian Guide",
+    "empty_subtitle": "Your AI Companion in Kemet",
     "empty_desc": "Ask me anything about Egypt's history, landmarks, tips, and more.",
     "features": {
       "landmarks": "Historical Landmarks",
@@ -334,7 +334,7 @@
   },
   "auth": {
     "welcome_back": "Welcome Back",
-    "sign_in_account": "Sign in to your Khety Guide account",
+    "sign_in_account": "Sign in to Khety",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm Password",
@@ -408,7 +408,7 @@
   "transit": {
     "nav": "Transit",
     "title": "Transit",
-    "subtitle": "Your complete guide to getting around Egypt",
+    "subtitle": "Your AI companion for navigating the land of Kemet",
     "stats": {
       "metro_lines": "3 Metro Lines",
       "careem_cities": "24 Careem Cities",
@@ -518,9 +518,9 @@
     "unknown_user": "Unknown",
     "no_invitees": "No one has joined yet",
     "no_invitees_desc": "Share your code and start collecting golden points!",
-    "share_title": "Join Khety Guide",
-    "share_text": "Join me on Khety Guide — your smart pharaonic travel guide 🏛️\nUse invite code: ",
-    "whatsapp_text": "🏛️ Join me on *Khety Guide* — your smart pharaonic travel guide!\n\nUse the invite link:\n",
+    "share_title": "Join Khety in the land of Kemet",
+    "share_text": "Join me on *Khety* — your AI companion in the land of Kemet 𓂀\nUse invite code: ",
+    "whatsapp_text": "𓂀 Join me on *Khety* — your AI companion in the land of Kemet!\n\nUse the invite link:\n",
     "ranks": {
       "novice": "Invite Rookie",
       "spreader": "Civilization Spreader",
@@ -533,7 +533,7 @@
   },
   "pricing": {
     "title": "Choose Your Plan",
-    "subtitle": "Unlock the full power of Khety Guide and explore ancient Egypt like never before.",
+    "subtitle": "Unlock the full power of Khety and explore the land of Kemet like never before.",
     "monthly": "Monthly",
     "yearly": "Yearly",
     "save_25": "Save 25%",

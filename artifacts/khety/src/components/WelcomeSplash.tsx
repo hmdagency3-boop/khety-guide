@@ -133,7 +133,7 @@ export function WelcomeSplash() {
           {/* Branding */}
           <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-1 pointer-events-none">
             <p className="text-primary font-display font-bold text-lg drop-shadow-lg">خيتي</p>
-            <p className="text-white/60 text-xs">Khety Guide</p>
+            <p className="text-white/60 text-xs">رفيق كيميت</p>
           </div>
         </motion.div>
       )}

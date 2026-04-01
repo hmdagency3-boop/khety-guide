@@ -326,7 +326,7 @@
   },
   "auth": {
     "welcome_back": "欢迎回来",
-    "sign_in_account": "登录您的 Khety Guide 账户",
+    "sign_in_account": "登录Khety",
     "email": "邮箱",
     "password": "密码",
     "confirm_password": "确认密码",
@@ -510,9 +510,9 @@
     "unknown_user": "未知用户",
     "no_invitees": "还没有人加入",
     "no_invitees_desc": "分享您的邀请码，开始收集金积分！",
-    "share_title": "加入 Khety Guide",
-    "share_text": "和我一起使用 Khety Guide — 您的智能法老旅游指南 🏛️\n邀请码：",
-    "whatsapp_text": "🏛️ 和我一起使用 *Khety Guide* — 您的智能法老旅游指南！\n\n使用邀请链接：\n",
+    "share_title": "加入凯梅特之地的Khety",
+    "share_text": "和我一起使用 Khety Guide — 您的AI伴侣，带您探索凯梅特之地 🏛️\n邀请码：",
+    "whatsapp_text": "🏛️ 和我一起使用 *Khety Guide* — 您的AI伴侣，带您探索凯梅特之地！\n\n使用邀请链接：\n",
     "ranks": {
       "novice": "推荐新手",
       "spreader": "文明传播者",
@@ -525,7 +525,7 @@
   },
   "pricing": {
     "title": "选择您的方案",
-    "subtitle": "解锁Khety Guide的全部功能，以前所未有的方式探索古埃及。",
+    "subtitle": "解锁Khety的全部功能，以前所未有的方式探索凯梅特之地。",
     "monthly": "每月",
     "yearly": "每年",
     "save_25": "节省25%",
