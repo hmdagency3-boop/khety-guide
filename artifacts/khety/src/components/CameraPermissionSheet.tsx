@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 interface Props {
   language?: string;
-  onGranted: () => void;
+  onGranted: (stream: MediaStream) => void;
   onClose: () => void;
 }
 
@@ -34,15 +34,15 @@ export function CameraPermissionSheet({ language = "en", onGranted, onClose }: P
   async function handleAllow() {
     setRequesting(true);
     try {
+      // Keep the stream alive — pass it directly to the AR modal so iOS Safari
+      // doesn't need a second getUserMedia call outside a user gesture.
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
+        video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
         audio: false,
       });
-      stream.getTracks().forEach((t) => t.stop());
-      onGranted();
+      onGranted(stream);
     } catch {
       setDenied(true);
-    } finally {
       setRequesting(false);
     }
   }

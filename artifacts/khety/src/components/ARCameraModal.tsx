@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase";
 interface Props {
   userId: string;
   language?: string;
+  initialStream?: MediaStream | null;
   onClose: () => void;
 }
 
@@ -25,7 +26,7 @@ function normAngle(d: number) {
   return d;
 }
 
-export function ARCameraModal({ userId, language = "en", onClose }: Props) {
+export function ARCameraModal({ userId, language = "en", initialStream = null, onClose }: Props) {
   /* ── DOM refs (RAF-only, React never sets style on these) ─── */
   const videoRef   = useRef<HTMLVideoElement>(null);
   const canvasRef  = useRef<HTMLCanvasElement>(null);
@@ -99,7 +100,9 @@ export function ARCameraModal({ userId, language = "en", onClose }: Props) {
   /* ── 2. Camera + compass setup ───────────────────────────── */
   useEffect(() => {
     let alive  = true;
-    let stream: MediaStream | null = null;
+    // If a stream was obtained in the user-gesture (click handler), use it
+    // directly so iOS Safari doesn't need a second getUserMedia call.
+    let stream: MediaStream | null = initialStream ?? null;
 
     const onOrient = (e: DeviceOrientationEvent) => {
       const ext = e as any;
@@ -118,10 +121,14 @@ export function ARCameraModal({ userId, language = "en", onClose }: Props) {
       window.addEventListener("deviceorientation",         onOrient as EventListener, true);
 
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-          audio: false,
-        });
+        if (!stream) {
+          // No pre-obtained stream — request camera now (only works reliably if
+          // permission was already granted in a previous session).
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+            audio: false,
+          });
+        }
         if (!alive) { stream.getTracks().forEach(t => t.stop()); return; }
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
@@ -140,6 +147,7 @@ export function ARCameraModal({ userId, language = "en", onClose }: Props) {
       window.removeEventListener("deviceorientation",         onOrient as EventListener, true);
       if (pollRef.current) clearInterval(pollRef.current);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* ── 3. Capture + AI ──────────────────────────────────────── */

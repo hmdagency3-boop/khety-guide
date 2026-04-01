@@ -313,6 +313,7 @@ export default function Chat() {
   const [showARCamera,      setShowARCamera]      = useState(false);
   const [showCamPermSheet,  setShowCamPermSheet]  = useState(false);
   const [showGoldenAge,     setShowGoldenAge]     = useState(false);
+  const [cameraStream,      setCameraStream]      = useState<MediaStream | null>(null);
   const { state: camPerm } = useCameraPermission();
   const [travelProfile, setTravelProfile] = useState<TravelProfile | null>(null);
 
@@ -826,12 +827,24 @@ export default function Chat() {
       {showCamPermSheet && (
         <CameraPermissionSheet
           language={i18n.language}
-          onGranted={() => { setShowCamPermSheet(false); setShowARCamera(true); }}
+          onGranted={(stream) => {
+            setCameraStream(stream);
+            setShowCamPermSheet(false);
+            setShowARCamera(true);
+          }}
           onClose={() => setShowCamPermSheet(false)}
         />
       )}
       {showARCamera && (
-        <ARCameraModal userId={user.id} language={i18n.language} onClose={() => setShowARCamera(false)} />
+        <ARCameraModal
+          userId={user.id}
+          language={i18n.language}
+          initialStream={cameraStream}
+          onClose={() => {
+            setShowARCamera(false);
+            setCameraStream(null);
+          }}
+        />
       )}
       {showGoldenAge && (
         <GoldenAgeModal userId={user.id} language={i18n.language} onClose={() => setShowGoldenAge(false)} />
@@ -989,10 +1002,18 @@ export default function Chat() {
           </button>
 
           <button
-            onClick={() => {
-              if (camPerm === "granted") {
+            onClick={async () => {
+              // Always call getUserMedia directly inside the click handler —
+              // this is required for iOS Safari's user-gesture restriction.
+              try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                  video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+                  audio: false,
+                });
+                setCameraStream(stream);
                 setShowARCamera(true);
-              } else {
+              } catch (e: any) {
+                // Permission denied or not yet requested → show explanation sheet
                 setShowCamPermSheet(true);
               }
             }}
