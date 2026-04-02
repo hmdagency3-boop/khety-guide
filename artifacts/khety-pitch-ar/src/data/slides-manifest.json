@@ -1,0 +1,90 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-7890-ab01-cd2345678901",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Title.tsx",
+    "title": "خيتي — العنوان",
+    "description": "مشروع تخرج: KHETY رفيق كيميت الذكي — تطبيق ذكاء اصطناعي لتحويل السياحة المصرية",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-f6a7-8901-bc12-de3456789012",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02Challenge.tsx",
+    "title": "المشكلة والفرصة",
+    "description": "15M سائح + 12% من الناتج المحلي + 3 تحديات رئيسية تعيق قطاع السياحة",
+    "speakerNotes": ""
+  },
+  {
+    "id": "c3d4e5f6-a7b8-9012-cd23-ef4567890123",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Solution.tsx",
+    "title": "الفئة المستهدفة",
+    "description": "4 فئات: السائح الدولي، جيل الاستكشاف (18-35)، الباحثون، السائح العائلي",
+    "speakerNotes": ""
+  },
+  {
+    "id": "d4e5f6a7-b8c9-0123-de34-f05678901234",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04Features.tsx",
+    "title": "لماذا يحتاجه السائح فعلاً؟",
+    "description": "4 لحظات إنسانية: أمام المعبد، وسط المدينة، السفر المنفرد، الأكل الأصيل",
+    "speakerNotes": ""
+  },
+  {
+    "id": "d4b5c6a7-e8f9-0124-de35-f15679012345",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide04bTourismScope.tsx",
+    "title": "نطاق خدمة التطبيق",
+    "description": "مصر أكثر من الأهرامات — 6 وجوه سياحية: فرعوني، إسلامي/قبطي، شاطئي، صحراوي، ثقافي حديث، مغامرات",
+    "speakerNotes": ""
+  },
+  {
+    "id": "e5f6a7b8-c9d0-1234-ef45-016789012345",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide05Travelers.tsx",
+    "title": "مميزات التطبيق للسائح",
+    "description": "6 مميزات: AI تفاعلي، AR، خريطة معالم، مركز أمان، مجتمع، دعم كل اللغات",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a9f1b2c3-d4e5-6789-ab01-cd0123456789",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide05bUnique.tsx",
+    "title": "ما لا يملكه أي منافس آخر",
+    "description": "4 مميزات حصرية: العصر الذهبي، ابحث عن مرشد بشري، دليل المواصلات، محتوى موثق + إشعارات",
+    "speakerNotes": ""
+  },
+  {
+    "id": "f6a7b8c9-d0e1-2345-f056-127890123456",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide06HowItWorks.tsx",
+    "title": "الأثر على قطاع السياحة",
+    "description": "4 مؤشرات متوقعة: +35% مدة إقامة، +28% إنفاق، 95% رضا، +40% عودة للزيارة",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a7b8c9d0-e1f2-3456-a167-238901234567",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide07AR.tsx",
+    "title": "الأثر الاقتصادي",
+    "description": "12% من الناتج المحلي، 3M+ وظيفة، $13B إيرادات + 3 محاور تأثير خيتي",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b8c9d0e1-f2a3-4567-b278-349012345678",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide08Plans.tsx",
+    "title": "الأثر القومي الاستراتيجي",
+    "description": "خيتي رافعة للاقتصاد الوطني: فتح أسواق بكر، بيانات للدولة، إعادة الإنفاق للداخل، تمديد الموسم",
+    "speakerNotes": ""
+  },
+  {
+    "id": "c9d0e1f2-a3b4-5678-c389-450123456789",
+    "position": 11,
+    "filepath": "src/pages/slides/Slide09Closing.tsx",
+    "title": "الختام — شكراً",
+    "description": "خاتمة المشروع: KHETY رفيق كيميت، khety.app، شكراً لحسن الاستماع",
+    "speakerNotes": ""
+  }
+]

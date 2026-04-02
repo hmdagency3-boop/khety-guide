@@ -1,0 +1,74 @@
+[
+  {
+    "id": "3a1b4c2d-5e6f-7890-abcd-ef1234567801",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Title.tsx",
+    "title": "Khety — Title",
+    "description": "Opening slide: KHETY brand, AI Companion tagline, full-bleed pyramid image",
+    "speakerNotes": ""
+  },
+  {
+    "id": "4b2c5d3e-6f7a-8901-bcde-f01234567802",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02Challenge.tsx",
+    "title": "The Challenge",
+    "description": "15M tourists yearly face language barriers, safety concerns, and lack of personalised guidance",
+    "speakerNotes": ""
+  },
+  {
+    "id": "5c3d6e4f-7a8b-9012-cdef-012345678903",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Solution.tsx",
+    "title": "The Solution — Meet Khety",
+    "description": "Khety: AI companion with conversational AI, AR scanner, and safety hub",
+    "speakerNotes": ""
+  },
+  {
+    "id": "6d4e7f5a-8b9c-0123-defa-123456789014",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04Features.tsx",
+    "title": "Core Features",
+    "description": "Three core features: AI Chat, AR Monument Scanner, Interactive Landmarks Map",
+    "speakerNotes": ""
+  },
+  {
+    "id": "7e5f8a6b-9c0d-1234-efab-234567890125",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05Travelers.tsx",
+    "title": "Built for Real Travellers",
+    "description": "Safety Hub, Community Feed, 8 Languages — three more key features",
+    "speakerNotes": ""
+  },
+  {
+    "id": "8f6a9b7c-0d1e-2345-fabc-345678901236",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06HowItWorks.tsx",
+    "title": "How It Works",
+    "description": "Three steps: Install, Build Profile, Explore Egypt",
+    "speakerNotes": ""
+  },
+  {
+    "id": "9a7b0c8d-1e2f-3456-abcd-456789012347",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07AR.tsx",
+    "title": "AR Experience",
+    "description": "Full-bleed AR feature slide: Point. Scan. Discover 5,000 Years of History.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "0b8c1d9e-2f3a-4567-bcde-567890123458",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide08Plans.tsx",
+    "title": "Plans & Pricing",
+    "description": "Free vs AI Companion+ ($9/month) comparison with feature lists",
+    "speakerNotes": ""
+  },
+  {
+    "id": "1c9d2e0f-3a4b-5678-cdef-678901234569",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide09Closing.tsx",
+    "title": "Closing — Begin Your Journey",
+    "description": "Closing brand slide with KHETY logo treatment and khety.app URL",
+    "speakerNotes": ""
+  }
+]
